@@ -8,10 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      ANDROID_HOME: /usr/local/lib/android/sdk
-      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
-      SDKMANAGER: /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager
 
     steps:
       - name: Checkout
@@ -22,12 +18,6 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-
-      - name: Accept Android SDK licenses
-        run: yes | "$SDKMANAGER" --licenses >/dev/null || true
-
-      - name: Install Android SDK 35
-        run: "$SDKMANAGER" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
