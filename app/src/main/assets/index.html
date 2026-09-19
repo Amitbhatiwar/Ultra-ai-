@@ -7,7 +7,7 @@
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#08090d;color:#fff}
 header{padding:18px 16px;position:sticky;top:0;background:#0b0c12ee;backdrop-filter:blur(14px);z-index:5;border-bottom:1px solid #222}
-.brand{font-size:22px;font-weight:800}.brand span{background:linear-gradient(90deg,#8b5cf6,#22d3ee);-webkit-background-clip:text;color:transparent}
+.brandWrap{display:flex;align-items:center;gap:11px}.brandLogo{width:48px;height:48px;flex:none;filter:drop-shadow(0 5px 14px #22d3ee22)}.brand{font-size:22px;font-weight:900;letter-spacing:-.5px}.brand span{background:linear-gradient(90deg,#22d3ee,#8b5cf6,#d946ef);-webkit-background-clip:text;color:transparent}.brandSub{font-size:9px;letter-spacing:2px;color:#7dd3fc;margin-top:2px}
 main{max-width:900px;margin:auto;padding:18px 14px 80px}.hero{padding:18px 4px 8px}.hero h1{font-size:32px;line-height:1.05;margin:4px 0 10px}.muted{color:#9ca3af}
 .tabs{display:flex;gap:8px;overflow:auto;padding:10px 0 16px}.tab{white-space:nowrap;border:1px solid #292b35;background:#11131a;color:#ddd;border-radius:999px;padding:10px 14px}.tab.active{background:#fff;color:#090a0e}
 .panel{display:none;background:#101219;border:1px solid #272936;border-radius:22px;padding:18px;box-shadow:0 12px 40px #0005}.panel.active{display:block}
@@ -18,9 +18,25 @@ a{color:#67e8f9;text-decoration:none}.row{display:flex;gap:10px;flex-wrap:wrap}.
 </style>
 </head>
 <body>
-<header><div class="brand">✦ TryOnAI <span>Ultra Pro</span></div></header>
+<header>
+<div class="brandWrap">
+  <svg class="brandLogo" viewBox="0 0 92 92" aria-label="TryOnAI logo" role="img">
+    <defs>
+      <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#22d3ee"/><stop offset=".52" stop-color="#6366f1"/><stop offset="1" stop-color="#d946ef"/></linearGradient>
+      <linearGradient id="lg2" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#8b5cf6"/><stop offset=".5" stop-color="#22d3ee"/><stop offset="1" stop-color="#fff"/></linearGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <rect x="3" y="3" width="86" height="86" rx="24" fill="#0b1020" stroke="#263a62"/>
+    <path d="M19 27 Q19 16 30 16 Q40 16 48 26 L67 48" fill="none" stroke="url(#lg1)" stroke-width="7" stroke-linecap="round" filter="url(#glow)"/>
+    <path d="M21 37 L45 37 L63 66 Q66 72 59 76 L37 76 L25 53" fill="none" stroke="url(#lg2)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M47 42 L71 42 L62 52" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="72" cy="23" r="4" fill="#22d3ee"/>
+  </svg>
+  <div><div class="brand">TryOn<span>AI</span></div><div class="brandSub">ULTRA PRO • VIRTUAL FASHION</div></div>
+</div>
+</header>
 <main>
-<section class="hero"><div class="badge">AI Fashion • Android</div><h1>Apna look, AI ke saath.</h1><div class="muted">Photo upload karo, outfit describe karo aur virtual try-on flow start karo.</div></section>
+<section class="hero"><div class="badge">✦ AI Fashion • Ultra Pro</div><h1>Apna look, AI ke saath.</h1><div class="muted">Photo upload karo, outfit describe karo aur virtual try-on flow start karo.</div></section>
 <div class="tabs" id="tabs">
 <button class="tab active" data-tab="try">✨ AI Try-On</button>
 <button class="tab" data-tab="video">🎬 Fashion Video</button>
