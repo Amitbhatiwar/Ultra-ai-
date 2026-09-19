@@ -138,10 +138,14 @@ $('garment').onchange=e=>{
  const f=e.target.files[0];if(!f)return;
  const u=URL.createObjectURL(f);$('garmentPreview').src=u;$('garmentPreview').style.display='block';
  $('garmentUpload').classList.add('hasImage');$('garmentFileName').textContent='✓ '+f.name;
- $('garmentFileName').style.display='block';$('removeGarment').style.display='inline-block';
+ $('garmentFileName').style.display='block';$('removeGarment').style.display='inline-block';updateTryButton();
 };
+function updateTryButton(){
+  $('tryBtn').textContent=$('garment').files[0]?'✨ Generate Realistic Try-On':'✨ Generate From Outfit Command';
+}
 $('removePerson').onclick=()=>clearFile('photo','preview','personFileName','personUpload','removePerson');
-$('removeGarment').onclick=()=>clearFile('garment','garmentPreview','garmentFileName','garmentUpload','removeGarment');
+$('removeGarment').onclick=()=>{clearFile('garment','garmentPreview','garmentFileName','garmentUpload','removeGarment');updateTryButton()};
+updateTryButton();
 
 $('tryBtn').onclick=async()=>{
  const p=$('photo').files[0], g=$('garment').files[0], command=$('command').value.trim();
