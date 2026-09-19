@@ -14,39 +14,43 @@ function json(data, status=200){
 }
 
 async function generateGarmentFromCommand(command){
-  const geminiKey = process.env.GEMINI_API_KEY;
-  if(!geminiKey){
+  const endpoint=(process.env.AZURE_ENDPOINT||"").replace(/\/$/,"");
+  const apiKey=process.env.AZURE_API_KEY;
+  const deploymentName=process.env.AZURE_DEPLOYMENT_NAME||process.env.DEPLOYMENT_NAME;
+
+  if(!endpoint || !apiKey || !deploymentName){
     throw new Error("TEXT_TO_GARMENT_NOT_CONFIGURED");
   }
 
-  const prompt = `Create a clean, photorealistic fashion product image of the clothing described below, for use as a virtual try-on garment reference.
+  const prompt = `Create a clean, photorealistic fashion product/catalog image of the clothing described below, for use as a virtual try-on garment reference.
 
 Clothing request: ${command}
 
 Rules:
 - Show ONLY the requested garment(s), centered on a plain light neutral background.
-- No person, mannequin, model, face, hands, body or accessories unless the accessory is explicitly part of the clothing request.
-- If multiple clothing items are requested (for example shirt and pants), show both items clearly in the same product-style image with enough separation for a try-on engine.
+- No person, mannequin, model, face, hands or body.
+- If multiple clothing items are requested, such as shirt and pants, show both items clearly in the same product-style image with enough separation for a try-on engine.
 - Preserve the requested colors, clothing type, fit and style.
-- High-resolution, realistic fabric texture, front-facing product/catalog photography.
+- Realistic fabric texture, front-facing catalog photography, clean studio lighting.
 - Do not add logos, brand names, text or watermarks.`;
 
-  const res = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions",{
+  const res=await fetch(endpoint+"/mai/v1/images/generations",{
     method:"POST",
     headers:{
-      "x-goog-api-key":geminiKey,
+      "api-key":apiKey,
       "Content-Type":"application/json"
     },
     body:JSON.stringify({
-      model:"gemini-3.1-flash-image",
-      input:prompt,
-      response_format:{type:"image",mime_type:"image/png",aspect_ratio:"3:4",image_size:"1K"}
+      model:deploymentName,
+      prompt,
+      width:1024,
+      height:1024
     })
   });
 
-  const raw = await res.text();
+  const raw=await res.text();
   if(!res.ok){
-    let msg="Gemini garment generation failed";
+    let msg="Azure garment generation failed";
     try{
       const d=JSON.parse(raw);
       msg=d.error?.message||d.error||msg;
@@ -55,22 +59,10 @@ Rules:
   }
 
   let data;
-  try{data=JSON.parse(raw)}catch(_){throw new Error("Invalid Gemini response")}
+  try{data=JSON.parse(raw)}catch(_){throw new Error("Invalid Azure image response")}
 
-  let b64=data?.output_image?.data||null;
-  if(!b64 && Array.isArray(data?.output)){
-    for(const step of data.output){
-      if(step?.output_image?.data){b64=step.output_image.data;break}
-      if(Array.isArray(step?.content)){
-        for(const block of step.content){
-          if(block?.type==="image" && block?.data){b64=block.data;break}
-          if(block?.image?.data){b64=block.image.data;break}
-        }
-      }
-      if(b64)break;
-    }
-  }
-  if(!b64) throw new Error("Gemini did not return a garment image");
+  const b64=data?.data?.find(x=>x?.b64_json)?.b64_json;
+  if(!b64) throw new Error("Azure did not return a garment image");
 
   const bin=atob(b64);
   const bytes=new Uint8Array(bin.length);
@@ -104,7 +96,7 @@ export default async function handler(req) {
         const detail=e?.message||String(e);
         if(detail==="TEXT_TO_GARMENT_NOT_CONFIGURED"){
           return json({
-            error:"Text-only try-on is not configured yet. Add GEMINI_API_KEY in Vercel Environment Variables, or upload a clothing photo.",
+            error:"Text-only try-on is not configured yet. Add AZURE_ENDPOINT, AZURE_API_KEY and AZURE_DEPLOYMENT_NAME in Vercel Environment Variables, or upload a clothing photo.",
             code:"TEXT_TO_GARMENT_NOT_CONFIGURED"
           },503);
         }
