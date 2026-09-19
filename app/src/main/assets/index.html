@@ -140,3 +140,4 @@ function useLook(x){$('command').value='Mujhe '+x+' mein dikhao';document.queryS
 $('voice').onclick=()=>{if(!('webkitSpeechRecognition' in window)){toast('Voice recognition is not available on this device');return}const R=window.webkitSpeechRecognition;const r=new R();r.lang='hi-IN';r.onresult=e=>$('command').value=e.results[0][0].transcript;r.start();toast('Bolna shuru karo…')};
 </script>
 </body></html>
+<!-- APK build trigger -->
