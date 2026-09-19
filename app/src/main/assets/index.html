@@ -96,7 +96,7 @@ a{color:#67e8f9;text-decoration:none}.row{display:flex;gap:10px;flex-wrap:wrap}.
 </main><div id="toast" class="toast"></div>
 <script>
 const $=id=>document.getElementById(id);
-$('backendUrl').value=localStorage.getItem('tryon_backend_url')||'https://ultra-ai-three.vercel.app';
+$('backendUrl').value=(localStorage.getItem('tryon_backend_url') && localStorage.getItem('tryon_backend_url').includes('ultra-ai-three.vercel.app') ? localStorage.getItem('tryon_backend_url') : 'https://ultra-ai-three.vercel.app');
 $('backendUrl').onchange=()=>localStorage.setItem('tryon_backend_url',$('backendUrl').value.trim().replace(/\\/$/,''));
 
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2600)}
