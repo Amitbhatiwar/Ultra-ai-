@@ -51,7 +51,7 @@ a{color:#67e8f9;text-decoration:none}.row{display:flex;gap:10px;flex-wrap:wrap}.
 <img id="preview" class="preview">
 <label>Garment / Clothing Photo</label><div class="upload"><input id="garment" type="file" accept="image/*"><div class="small">Shirt, pant, dress ya product photo upload karein.</div></div>
 <img id="garmentPreview" class="preview">
-<label>Backend URL</label><input id="backendUrl" type="text" placeholder="https://your-project.vercel.app" value="">
+<label>Backend URL</label><input id="backendUrl" type="text" placeholder="https://your-project.vercel.app" value="https://ultra-ai-three.vercel.app">
 <div class="small">Sirf ek baar backend URL save karo. API key app mein kabhi mat daalna.</div>
 <label>Outfit command</label><input id="command" type="text" value="Mujhe black shirt aur black pant mein dikhao">
 <div class="row" style="margin-top:12px"><button id="voice">🎙️ Voice</button><button id="tryBtn">Generate Realistic Try-On</button></div>
@@ -96,7 +96,7 @@ a{color:#67e8f9;text-decoration:none}.row{display:flex;gap:10px;flex-wrap:wrap}.
 </main><div id="toast" class="toast"></div>
 <script>
 const $=id=>document.getElementById(id);
-$('backendUrl').value=localStorage.getItem('tryon_backend_url')||'';
+$('backendUrl').value=localStorage.getItem('tryon_backend_url')||'https://ultra-ai-three.vercel.app';
 $('backendUrl').onchange=()=>localStorage.setItem('tryon_backend_url',$('backendUrl').value.trim().replace(/\\/$/,''));
 
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2600)}
