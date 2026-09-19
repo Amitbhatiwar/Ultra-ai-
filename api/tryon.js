@@ -1,38 +1,90 @@
-export default async function handler(req, res) {
-  // Allow the Android WebView/local app to call this API.
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+export const config = { runtime: "edge" };
 
-  if (req.method === "OPTIONS") return res.status(204).end();
-  if (req.method !== "POST") return res.status(405).json({error:"Method not allowed"});
+export default async function handler(req) {
+  const cors = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+
+  if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405, headers: { ...cors, "Content-Type": "application/json" }
+    });
+  }
+
   const key = process.env.TRYONCLOUD_API_KEY;
-  if (!key) return res.status(500).json({error:"TRYONCLOUD_API_KEY is not configured"});
+  if (!key) {
+    return new Response(JSON.stringify({ error: "TRYONCLOUD_API_KEY is not configured" }), {
+      status: 500, headers: { ...cors, "Content-Type": "application/json" }
+    });
+  }
+
   try {
-    const form = new FormData();
     const incoming = await req.formData();
     const person = incoming.get("person_image");
     const garment = incoming.get("garment_image");
+
     if (!(person instanceof File) || !(garment instanceof File)) {
-      return res.status(400).json({error:"Both person_image and garment_image are required"});
+      return new Response(JSON.stringify({ error: "Both person_image and garment_image are required" }), {
+        status: 400, headers: { ...cors, "Content-Type": "application/json" }
+      });
     }
+
+    if (person.size > 15 * 1024 * 1024 || garment.size > 15 * 1024 * 1024) {
+      return new Response(JSON.stringify({ error: "Each image must be 15 MB or smaller" }), {
+        status: 400, headers: { ...cors, "Content-Type": "application/json" }
+      });
+    }
+
+    const form = new FormData();
     form.append("person_image", person, person.name || "person.jpg");
     form.append("garment_image", garment, garment.name || "garment.jpg");
-    const r = await fetch("https://www.tryoncloud.com/api/v1/generate", {
-      method:"POST",
-      headers:{"X-API-KEY":key},
-      body:form
+
+    const upstream = await fetch("https://www.tryoncloud.com/api/v1/generate", {
+      method: "POST",
+      headers: { "X-API-KEY": key },
+      body: form
     });
-    const type = r.headers.get("content-type") || "";
-    if (!r.ok) {
-      const data = type.includes("application/json") ? await r.json() : {error: await r.text()};
-      return res.status(r.status).json(data);
+
+    const contentType = upstream.headers.get("content-type") || "image/png";
+    const body = await upstream.arrayBuffer();
+
+    if (!upstream.ok) {
+      let message = "TryOnCloud request failed";
+      try {
+        const txt = new TextDecoder().decode(body);
+        const data = JSON.parse(txt);
+        message = data.error || data.message || message;
+        return new Response(JSON.stringify({ error: message, code: data.code }), {
+          status: upstream.status,
+          headers: { ...cors, "Content-Type": "application/json" }
+        });
+      } catch (_) {
+        message = new TextDecoder().decode(body).slice(0, 500) || message;
+        return new Response(JSON.stringify({ error: message }), {
+          status: upstream.status,
+          headers: { ...cors, "Content-Type": "application/json" }
+        });
+      }
     }
-    const buf = Buffer.from(await r.arrayBuffer());
-    res.setHeader("Content-Type", type || "image/png");
-    res.setHeader("Cache-Control","no-store");
-    return res.status(200).send(buf);
+
+    return new Response(body, {
+      status: 200,
+      headers: {
+        ...cors,
+        "Content-Type": contentType,
+        "Cache-Control": "no-store"
+      }
+    });
   } catch (e) {
-    return res.status(500).json({error:"Try-on backend error", detail:e.message});
+    return new Response(JSON.stringify({
+      error: "Try-on backend error",
+      detail: e?.message || String(e)
+    }), {
+      status: 500,
+      headers: { ...cors, "Content-Type": "application/json" }
+    });
   }
 }
