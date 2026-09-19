@@ -5,7 +5,7 @@
         android:label="TryOnAI Ultra Pro"
         android:usesCleartextTraffic="false"
         android:allowBackup="false"
-        android:supportsRtl="true">
+        android:supportsRtl="true"\n        android:icon="@drawable/tryonai_launcher"\n        android:roundIcon="@drawable/tryonai_launcher">
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
