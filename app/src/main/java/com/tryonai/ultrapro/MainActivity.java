@@ -9,17 +9,14 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import androidx.activity.OnBackPressedCallback;
-import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
     private WebView webView;
     private ValueCallback<Uri[]> filePathCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         webView = new WebView(this);
         setContentView(webView);
 
@@ -33,17 +30,11 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
-            public boolean onShowFileChooser(
-                    WebView view,
-                    ValueCallback<Uri[]> callback,
-                    FileChooserParams params) {
-                if (filePathCallback != null) {
-                    filePathCallback.onReceiveValue(null);
-                }
+            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
+                if (filePathCallback != null) filePathCallback.onReceiveValue(null);
                 filePathCallback = callback;
-                Intent intent = params.createIntent();
                 try {
-                    startActivityForResult(intent, 1001);
+                    startActivityForResult(params.createIntent(), 1001);
                 } catch (Exception e) {
                     filePathCallback = null;
                     callback.onReceiveValue(null);
@@ -52,16 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
         webView.loadUrl("file:///android_asset/index.html");
-
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                if (webView.canGoBack()) webView.goBack();
-                else finish();
-            }
-        });
     }
 
     @Override
@@ -72,5 +54,11 @@ public class MainActivity extends AppCompatActivity {
             filePathCallback.onReceiveValue(results);
             filePathCallback = null;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView != null && webView.canGoBack()) webView.goBack();
+        else super.onBackPressed();
     }
 }
