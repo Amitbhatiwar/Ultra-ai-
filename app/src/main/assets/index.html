@@ -13,7 +13,7 @@ main{max-width:900px;margin:auto;padding:18px 14px 80px}.hero{padding:18px 4px 8
 .panel{display:none;background:#101219;border:1px solid #272936;border-radius:22px;padding:18px;box-shadow:0 12px 40px #0005}.panel.active{display:block}
 h2{margin:0 0 8px}label{display:block;margin:15px 0 8px;color:#cbd5e1}.upload{border:1px dashed #4b5563;border-radius:18px;padding:24px;text-align:center;background:#0b0d12}
 input[type=file]{width:100%;color:#bbb}input[type=text],input[type=number],select{width:100%;padding:14px;border-radius:14px;border:1px solid #30333f;background:#0a0b10;color:#fff;font-size:16px}
-button{border:0;border-radius:14px;padding:13px 17px;background:linear-gradient(90deg,#7c3aed,#0891b2);color:#fff;font-weight:700;font-size:15px;cursor:pointer}.secondary{background:#20232d}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.card{background:#0b0d12;border:1px solid #292c38;border-radius:18px;padding:15px}.price{font-size:22px;font-weight:800}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#172033;color:#67e8f9;font-size:12px}.preview{width:100%;max-height:420px;object-fit:contain;border-radius:16px;background:#050608;margin-top:14px;display:none}.result{margin-top:15px;padding:15px;border-radius:16px;background:#0b0d12;border:1px solid #292c38}.look{min-height:160px}.plan{display:flex;flex-direction:column;gap:10px}.small{font-size:13px;color:#9ca3af}.toast{position:fixed;left:14px;right:14px;bottom:18px;background:#171922;border:1px solid #343744;padding:13px 15px;border-radius:14px;display:none;z-index:20}
+button{border:0;border-radius:14px;padding:13px 17px;background:linear-gradient(90deg,#7c3aed,#0891b2);color:#fff;font-weight:700;font-size:15px;cursor:pointer}.secondary{background:#20232d}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.card{background:#0b0d12;border:1px solid #292c38;border-radius:18px;padding:15px}.price{font-size:22px;font-weight:800}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#172033;color:#67e8f9;font-size:12px}.preview{width:100%;max-height:520px;object-fit:contain;border-radius:18px;background:#050608;margin-top:14px;display:none;border:1px solid #303443}.uploadPreview{width:100%;max-height:360px;object-fit:contain;border-radius:16px;background:#050608;margin:12px 0 0;display:none;border:1px solid #303443}.upload.hasImage{padding:14px}.upload input[type=file]{margin-bottom:2px}.fileName{display:none}.result{margin-top:15px;padding:15px;border-radius:16px;background:#0b0d12;border:1px solid #292c38}.look{min-height:160px}.plan{display:flex;flex-direction:column;gap:10px}.small{font-size:13px;color:#9ca3af}.toast{position:fixed;left:14px;right:14px;bottom:18px;background:#171922;border:1px solid #343744;padding:13px 15px;border-radius:14px;display:none;z-index:20}
 a{color:#67e8f9;text-decoration:none}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
 </style>
 </head>
@@ -46,15 +46,29 @@ a{color:#67e8f9;text-decoration:none}.row{display:flex;gap:10px;flex-wrap:wrap}.
 </div>
 
 <section class="panel active" id="try">
-<h2>✨ AI Try-On</h2><div class="muted">Apni photo select karo.</div>
-<label>Person Photo</label><div class="upload"><input id="photo" type="file" accept="image/*"><div class="small">Gallery se clear full/half body photo choose karein.</div></div>
-<img id="preview" class="preview">
-<label>Garment / Clothing Photo</label><div class="upload"><input id="garment" type="file" accept="image/*"><div class="small">Shirt, pant, dress ya product photo upload karein.</div></div>
-<img id="garmentPreview" class="preview">
-<label>Backend URL</label><input id="backendUrl" type="text" placeholder="https://your-project.vercel.app" value="https://ultra-ai-three.vercel.app">
-<div class="small">Sirf ek baar backend URL save karo. API key app mein kabhi mat daalna.</div>
-<label>Outfit command</label><input id="command" type="text" value="Mujhe black shirt aur black pant mein dikhao">
-<div class="row" style="margin-top:12px"><button id="voice">🎙️ Voice</button><button id="tryBtn">Generate Realistic Try-On</button></div>
+<h2>✨ AI Try-On</h2><div class="muted">Apni photo aur clothing select karo, phir outfit command do.</div>
+
+<label>1. Person Photo</label>
+<div class="upload" id="personUpload">
+  <input id="photo" type="file" accept="image/*">
+  <div class="small">Clear full/half body photo choose karein.</div>
+  <img id="preview" class="uploadPreview" alt="Your photo preview">
+</div>
+
+<label>2. Garment / Clothing Photo</label>
+<div class="upload" id="garmentUpload">
+  <input id="garment" type="file" accept="image/*">
+  <div class="small">Shirt, pant, dress ya product photo upload karein.</div>
+  <img id="garmentPreview" class="uploadPreview" alt="Clothing preview">
+</div>
+
+<label>3. Outfit Command</label>
+<input id="command" type="text" value="Mujhe black shirt aur black pant mein dikhao" placeholder="Jaise: Mujhe black shirt aur blue jeans mein dikhao">
+
+<div class="row" style="margin-top:14px">
+  <button id="voice">🎙️ Voice Command</button>
+  <button id="tryBtn">✨ Generate Realistic Try-On</button>
+</div>
 <div id="tryResult" class="result" style="display:none"></div>
 </section>
 
@@ -101,8 +115,8 @@ $('backendUrl').onchange=()=>localStorage.setItem('tryon_backend_url',$('backend
 
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2600)}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
-$('photo').onchange=e=>{const f=e.target.files[0];if(!f)return;const u=URL.createObjectURL(f);$('preview').src=u;$('preview').style.display='block'};
-$('garment').onchange=e=>{const f=e.target.files[0];if(!f)return;const u=URL.createObjectURL(f);$('garmentPreview').src=u;$('garmentPreview').style.display='block'};
+$('photo').onchange=e=>{const f=e.target.files[0];if(!f)return;const u=URL.createObjectURL(f);$('preview').src=u;$('preview').style.display='block';$('personUpload').classList.add('hasImage')};
+$('garment').onchange=e=>{const f=e.target.files[0];if(!f)return;const u=URL.createObjectURL(f);$('garmentPreview').src=u;$('garmentPreview').style.display='block';$('garmentUpload').classList.add('hasImage')};
 $('tryBtn').onclick=async()=>{
  const p=$('photo').files[0], g=$('garment').files[0];
  if(!p){toast('Pehle apni photo select karo');return}
@@ -111,10 +125,7 @@ $('tryBtn').onclick=async()=>{
  r.innerHTML='<b>🤖 AI Try-On processing…</b><br><span class="small">Garment + person image AI engine ko bheji ja rahi hai.</span>';
  const fd=new FormData(); fd.append('person_image',p); fd.append('garment_image',g);
  try{
-   const base=($('backendUrl').value.trim().replace(/\\/$/,''));
-if(!base){toast('Backend URL pehle enter karo');return}
-localStorage.setItem('tryon_backend_url',base);
-const res=await fetch(base+'/api/tryon',{method:'POST',body:fd});
+   const res=await fetch(BACKEND_URL+'/api/tryon',{method:'POST',body:fd});
    if(!res.ok){let e={};try{e=await res.json()}catch(_){}
      throw new Error(e.code?e.code+': '+(e.error||'Try-on failed'):(e.error||'Try-on failed'));
    }
