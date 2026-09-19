@@ -1,0 +1,4 @@
+{
+  "functions":{"api/tryon.js":{"maxDuration":120}},
+  "rewrites":[{"source":"/api/tryon","destination":"/api/tryon.js"}]
+}
