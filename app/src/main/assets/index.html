@@ -164,7 +164,7 @@ $('tryBtn').onclick=async()=>{
    const blob=await res.blob(); const url=URL.createObjectURL(blob);
    r.innerHTML='<b>✨ Real AI Try-On Result</b><br><span class="small">Prompt: '+command+'</span><img class="preview" style="display:block" src="'+url+'"><br><a href="'+url+'" download="tryonai-result.png">⬇️ Save Result</a>';
  }catch(err){
-   r.innerHTML='<b>❌ Try-On failed</b><br><span class="small">'+err.message+'</span><br><br><span class="small">Agar clothing photo nahi di hai to text-to-garment AI ke liye backend mein GEMINI_API_KEY configure hona chahiye.</span>'
+   r.innerHTML='<b>❌ Try-On failed</b><br><span class="small">'+err.message+'</span><br><br><span class="small">Agar clothing photo nahi di hai to command-to-garment AI ke liye Vercel backend mein Azure Image settings configure honi chahiye.</span>'
  }
 };
 $('videoPhoto').onchange=e=>{const f=e.target.files[0];if(!f)return;const u=URL.createObjectURL(f);$('videoPhotoPreview').src=u;$('videoPhotoPreview').style.display='block';$('videoUpload').classList.add('hasImage')};
