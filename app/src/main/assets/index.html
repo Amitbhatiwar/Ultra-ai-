@@ -13,7 +13,7 @@ main{max-width:900px;margin:auto;padding:18px 14px 80px}.hero{padding:18px 4px 8
 .panel{display:none;background:#101219;border:1px solid #272936;border-radius:22px;padding:18px;box-shadow:0 12px 40px #0005}.panel.active{display:block}
 h2{margin:0 0 8px}label{display:block;margin:15px 0 8px;color:#cbd5e1}.upload{border:1px dashed #4b5563;border-radius:18px;padding:24px;text-align:center;background:#0b0d12}
 input[type=file]{width:100%;color:#bbb}input[type=text],input[type=number],select{width:100%;padding:14px;border-radius:14px;border:1px solid #30333f;background:#0a0b10;color:#fff;font-size:16px}
-button{border:0;border-radius:14px;padding:13px 17px;background:linear-gradient(90deg,#7c3aed,#0891b2);color:#fff;font-weight:700;font-size:15px;cursor:pointer}.secondary{background:#20232d}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.card{background:#0b0d12;border:1px solid #292c38;border-radius:18px;padding:15px}.price{font-size:22px;font-weight:800}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#172033;color:#67e8f9;font-size:12px}.preview{width:100%;max-height:520px;object-fit:contain;border-radius:18px;background:#050608;margin-top:14px;display:none;border:1px solid #303443}.uploadPreview{width:100%;max-height:360px;object-fit:contain;border-radius:16px;background:#050608;margin:12px 0 0;display:none;border:1px solid #303443}.upload.hasImage{padding:14px}.upload input[type=file]{margin-bottom:2px}.fileName{display:none}.result{margin-top:15px;padding:15px;border-radius:16px;background:#0b0d12;border:1px solid #292c38}.look{min-height:160px}.plan{display:flex;flex-direction:column;gap:10px}.small{font-size:13px;color:#9ca3af}.toast{position:fixed;left:14px;right:14px;bottom:18px;background:#171922;border:1px solid #343744;padding:13px 15px;border-radius:14px;display:none;z-index:20}
+button{border:0;border-radius:14px;padding:13px 17px;background:linear-gradient(90deg,#7c3aed,#0891b2);color:#fff;font-weight:700;font-size:15px;cursor:pointer}.secondary{background:#20232d}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.card{background:#0b0d12;border:1px solid #292c38;border-radius:18px;padding:15px}.price{font-size:22px;font-weight:800}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#172033;color:#67e8f9;font-size:12px}.preview{width:100%;max-height:520px;object-fit:contain;border-radius:18px;background:#050608;margin-top:14px;display:none;border:1px solid #303443}.uploadPreview{width:100%;max-height:360px;object-fit:contain;border-radius:16px;background:#050608;margin:12px 0 0;display:none;border:1px solid #303443}.upload.hasImage{padding:14px}.upload input[type=file]{margin-bottom:2px}.fileName{display:none}.result{margin-top:15px;padding:15px;border-radius:16px;background:#0b0d12;border:1px solid #292c38}.look{min-height:160px}.plan{display:flex;flex-direction:column;gap:10px}.small{font-size:13px;color:#9ca3af}.lookImg{width:100%;height:220px;object-fit:cover;border-radius:14px;margin:10px 0 12px;background:#151821;border:1px solid #2d3140}.marketLogo{width:42px;height:42px;object-fit:contain;border-radius:10px;background:#fff;padding:6px;margin-bottom:10px}.marketHead{display:flex;align-items:center;gap:10px}.marketName{font-size:18px;font-weight:800}.videoStage{margin-top:15px;padding:14px;border-radius:18px;background:linear-gradient(145deg,#0b0d12,#151827);border:1px solid #2d3140}.videoCanvas{position:relative;height:360px;overflow:hidden;border-radius:16px;background:#050608}.videoCanvas img{width:100%;height:100%;object-fit:cover;animation:videoKenBurns 6s ease-in-out infinite alternate}.videoOverlay{position:absolute;left:12px;right:12px;bottom:12px;padding:12px;border-radius:14px;background:#050608aa;backdrop-filter:blur(8px)}@keyframes videoKenBurns{from{transform:scale(1)}to{transform:scale(1.09) translate(-1%,-1%)}}.toast{position:fixed;left:14px;right:14px;bottom:18px;background:#171922;border:1px solid #343744;padding:13px 15px;border-radius:14px;display:none;z-index:20}
 a{color:#67e8f9;text-decoration:none}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
 </style>
 </head>
@@ -73,10 +73,16 @@ a{color:#67e8f9;text-decoration:none}.row{display:flex;gap:10px;flex-wrap:wrap}.
 </section>
 
 <section class="panel" id="video">
-<h2>🎬 AI Fashion Video</h2><div class="muted">Chosen look ke liye video prompt prepare karo.</div>
-<label>Duration</label><select id="duration"><option>5 sec</option><option>10 sec</option><option>15 sec</option><option>30 sec</option></select>
-<label>Video prompt</label><input id="videoPrompt" value="Luxury fashion walk, confident pose, cinematic lighting">
-<button style="margin-top:12px" id="videoBtn">Create Fashion Video</button>
+<h2>🎬 AI Fashion Video</h2><div class="muted">Apni photo + look prompt se fashion-walk video preview ready karo.</div>
+<label>1. Model Photo</label>
+<div class="upload" id="videoUpload">
+  <input id="videoPhoto" type="file" accept="image/*">
+  <div class="small">Try-On wali photo bhi yahan use kar sakte ho.</div>
+  <img id="videoPhotoPreview" class="uploadPreview" alt="Fashion video model preview">
+</div>
+<label>2. Duration</label><select id="duration"><option>5 sec</option><option>10 sec</option><option>15 sec</option><option>30 sec</option></select>
+<label>3. Video prompt</label><input id="videoPrompt" value="Luxury fashion walk, confident pose, cinematic lighting">
+<button style="margin-top:12px" id="videoBtn">🎬 Generate Fashion Video</button>
 <div id="videoResult" class="result" style="display:none"></div>
 </section>
 
@@ -84,11 +90,11 @@ a{color:#67e8f9;text-decoration:none}.row{display:flex;gap:10px;flex-wrap:wrap}.
 <h2>🛍️ Find & Compare</h2><div class="muted">Query ke basis par marketplace search links.</div>
 <label>Search</label><input id="shopQuery" value="black shirt black pants men">
 <div class="grid" style="margin-top:14px">
-<div class="card"><b>Amazon</b><p class="price">Search</p><a id="amazon" target="_blank">Open →</a></div>
-<div class="card"><b>Flipkart</b><p class="price">Search</p><a id="flipkart" target="_blank">Open →</a></div>
-<div class="card"><b>Meesho</b><p class="price">Search</p><a id="meesho" target="_blank">Open →</a></div>
-<div class="card"><b>Myntra</b><p class="price">Search</p><a id="myntra" target="_blank">Open →</a></div>
-<div class="card"><b>AJIO</b><p class="price">Search</p><a id="ajio" target="_blank">Open →</a></div>
+<div class="card marketCard"><img class="marketLogo" src="https://www.google.com/s2/favicons?domain=amazon.in&sz=128" alt="Amazon logo" onerror="this.style.display='none'"><div class="marketName">Amazon</div><p class="price">Search</p><a id="amazon" target="_blank" rel="noopener">Open →</a></div>
+<div class="card marketCard"><img class="marketLogo" src="https://www.google.com/s2/favicons?domain=flipkart.com&sz=128" alt="Flipkart logo" onerror="this.style.display='none'"><div class="marketName">Flipkart</div><p class="price">Search</p><a id="flipkart" target="_blank" rel="noopener">Open →</a></div>
+<div class="card marketCard"><img class="marketLogo" src="https://www.google.com/s2/favicons?domain=meesho.com&sz=128" alt="Meesho logo" onerror="this.style.display='none'"><div class="marketName">Meesho</div><p class="price">Search</p><a id="meesho" target="_blank" rel="noopener">Open →</a></div>
+<div class="card marketCard"><img class="marketLogo" src="https://www.google.com/s2/favicons?domain=myntra.com&sz=128" alt="Myntra logo" onerror="this.style.display='none'"><div class="marketName">Myntra</div><p class="price">Search</p><a id="myntra" target="_blank" rel="noopener">Open →</a></div>
+<div class="card marketCard"><img class="marketLogo" src="https://www.google.com/s2/favicons?domain=ajio.com&sz=128" alt="AJIO logo" onerror="this.style.display='none'"><div class="marketName">AJIO</div><p class="price">Search</p><a id="ajio" target="_blank" rel="noopener">Open →</a></div>
 </div>
 <button class="secondary" style="margin-top:14px" id="shopBtn">Update Links</button>
 <div class="small" style="margin-top:12px">Note: live product prices/stock need authorized marketplace feeds or APIs.</div>
@@ -132,9 +138,15 @@ $('tryBtn').onclick=async()=>{
    r.innerHTML='<b>✨ Real AI Try-On Result</b><br><span class="small">Prompt: '+$('command').value+'</span><img class="preview" style="display:block" src="'+url+'"><br><a href="'+url+'" download="tryonai-result.png">⬇️ Save Result</a>';
  }catch(err){r.innerHTML='<b>❌ Try-On failed</b><br><span class="small">'+err.message+'</span><br><br><span class="small">Backend/API key setup check karein.</span>'}
 };
-$('videoBtn').onclick=()=>{const r=$('videoResult');r.style.display='block';r.innerHTML='<b>Video request ready ✓</b><br><span class="small">'+$('duration').value+' • '+$('videoPrompt').value+'</span><br><br>Production video API connect karne par MP4 result yahin milega.'};
+$('videoPhoto').onchange=e=>{const f=e.target.files[0];if(!f)return;const u=URL.createObjectURL(f);$('videoPhotoPreview').src=u;$('videoPhotoPreview').style.display='block';$('videoUpload').classList.add('hasImage')};
+$('videoBtn').onclick=()=>{
+ const f=$('videoPhoto').files[0]; if(!f){toast('Pehle model photo select karo');return}
+ const r=$('videoResult'); r.style.display='block';
+ const u=URL.createObjectURL(f);
+ r.innerHTML='<b>✨ Fashion Video Preview Ready</b><div class="videoStage"><div class="videoCanvas"><img src="'+u+'" alt="Fashion video preview"><div class="videoOverlay"><b>'+$('duration').value+' • AI Fashion Walk</b><br><span class="small">'+$('videoPrompt').value+'</span></div></div></div><div class="small" style="margin-top:10px">Ye live motion preview hai. Actual MP4 AI generation ke liye dedicated video-generation API key connect karni hogi.</div>';
+};
 function links(){const q=encodeURIComponent($('shopQuery').value.trim());$('amazon').href='https://www.amazon.in/s?k='+q;$('flipkart').href='https://www.flipkart.com/search?q='+q;$('meesho').href='https://www.meesho.com/search?q='+q;$('myntra').href='https://www.myntra.com/'+q.replace(/%20/g,'-');$('ajio').href='https://www.ajio.com/search/?text='+q}
-$('shopBtn').onclick=()=>{links();toast('Marketplace links updated')};links();
+$('shopBtn').onclick=()=>{links();toast('Marketplace links updated')};$('shopQuery').addEventListener('input',links);links();
 $('styleBtn').onclick=()=>{const o=$('occasion').value,b=$('budget').value;const arr=[['Classic','Cream Sherwani + Brown Jooti'],['Modern','Black Bandhgala + Black Trousers'],['Premium','Ivory Indo-Western + Tailored Pants'],['Minimal','White Kurta Pajama + Loafers']];$('looks').innerHTML=arr.map(x=>'<div class="card look"><span class="badge">'+o+'</span><h3>'+x[0]+'</h3><p>'+x[1]+'</p><div class="small">Budget ₹'+b+'</div><button style="margin-top:12px" onclick="useLook(\''+x[1].replace(/'/g,'')+'\')">Try This Look</button></div>').join('')};
 function useLook(x){$('command').value='Mujhe '+x+' mein dikhao';document.querySelector('[data-tab="try"]').click();toast('Look Try-On mein set ho gaya')}
 $('voice').onclick=()=>{if(!('webkitSpeechRecognition' in window)){toast('Voice recognition is not available on this device');return}const R=window.webkitSpeechRecognition;const r=new R();r.lang='hi-IN';r.onresult=e=>$('command').value=e.results[0][0].transcript;r.start();toast('Bolna shuru karo…')};
