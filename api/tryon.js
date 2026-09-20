@@ -34,7 +34,12 @@ Rules:
 - Realistic fabric texture, front-facing catalog photography, clean studio lighting.
 - Do not add logos, brand names, text or watermarks.`;
 
-  const res=await fetch(endpoint+"/mai/v1/images/generations",{
+  // Accept either the Azure resource base URL or the full MAI generations endpoint.
+  const imageEndpoint = /\/mai\/v1\/images\/generations\/?$/i.test(endpoint)
+    ? endpoint
+    : endpoint + "/mai/v1/images/generations";
+
+  const res=await fetch(imageEndpoint,{
     method:"POST",
     headers:{
       "api-key":apiKey,
